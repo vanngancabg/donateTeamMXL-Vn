@@ -65,6 +65,9 @@ const TEAM_INFO = {
 const SUPABASE_URL = 'https://mjtfqvmnyhfdgydnvlti.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_7-3VYFlyYd45ii43R0bi7A_5UEDnR20';
 const DONATION_TABLE = 'team_donation_logs';
+const HISTORY_LIMIT = 50;
+const HISTORY_VISIBLE_DEFAULT = 10;
+
 
 const memberGrid = document.getElementById('memberGrid');
 const popup = document.getElementById('popup');
@@ -87,6 +90,8 @@ const totalAmount = document.getElementById('totalAmount');
 const totalCount = document.getElementById('totalCount');
 const topDonor = document.getElementById('topDonor');
 const refreshHistoryBtn = document.getElementById('refreshHistoryBtn');
+const showMoreBtn = document.getElementById('showMoreBtn');
+const showLessBtn = document.getElementById('showLessBtn');
 
 const selectedAvatar = document.getElementById('selectedAvatar');
 const selectedDisplayName = document.getElementById('selectedDisplayName');
@@ -99,6 +104,9 @@ const selectedAccountNumber = document.getElementById('selectedAccountNumber');
 const selectedAccountName = document.getElementById('selectedAccountName');
 
 let currentMember = MEMBERS.find((member) => member.id === TEAM_INFO.defaultMemberId) || MEMBERS[0];
+let historyExpanded = false;
+let latestHistoryCache = [];
+
 
 function formatMoney(amount) {
   return Number(amount).toLocaleString('vi-VN') + ' VND';
@@ -209,7 +217,7 @@ function buildTransferInfo(defaultInfo) {
 }
 
 async function fetchHistory() {
-  const url = `${SUPABASE_URL}/rest/v1/${DONATION_TABLE}?select=id,created_at,name,member_name,amount,info&order=created_at.desc&limit=50`;
+  const url = `${SUPABASE_URL}/rest/v1/${DONATION_TABLE}?select=id,created_at,name,member_name,amount,info&order=created_at.desc&limit=${HISTORY_LIMIT}`;
 
   const response = await fetch(url, {
     headers: {
@@ -224,6 +232,7 @@ async function fetchHistory() {
 
   return response.json();
 }
+
 
 async function insertHistory(entry) {
   const url = `${SUPABASE_URL}/rest/v1/${DONATION_TABLE}`;
@@ -247,12 +256,48 @@ async function insertHistory(entry) {
   return rows[0];
 }
 
+
+
+function renderHistoryRows(history) {
+  tableBody.innerHTML = '';
+
+  if (!history.length) {
+    tableBody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu dùng chung.</td></tr>';
+    showMoreBtn.classList.add('hidden');
+    showLessBtn.classList.add('hidden');
+    return;
+  }
+
+  const visibleRows = historyExpanded
+    ? history
+    : history.slice(0, HISTORY_VISIBLE_DEFAULT);
+
+  visibleRows.forEach((item) => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${new Date(item.created_at).toLocaleString('vi-VN')}</td>
+      <td>${escapeHtml(item.name || 'Ẩn danh')}</td>
+      <td>${escapeHtml(item.member_name || '---')}</td>
+      <td>${formatMoney(item.amount)}</td>
+      <td>${escapeHtml(item.info)}</td>
+    `;
+    tableBody.appendChild(row);
+  });
+
+  if (history.length > HISTORY_VISIBLE_DEFAULT) {
+    showMoreBtn.classList.toggle('hidden', historyExpanded);
+    showLessBtn.classList.toggle('hidden', !historyExpanded);
+  } else {
+    showMoreBtn.classList.add('hidden');
+    showLessBtn.classList.add('hidden');
+  }
+}
 async function renderHistory() {
   tableBody.innerHTML = '<tr><td colspan="5">Đang tải dữ liệu...</td></tr>';
 
   try {
     const history = await fetchHistory();
-    tableBody.innerHTML = '';
+    latestHistoryCache = history;
 
     if (!history.length) {
       tableBody.innerHTML = '<tr><td colspan="5">Chưa có dữ liệu dùng chung.</td></tr>';
@@ -260,6 +305,8 @@ async function renderHistory() {
       totalCount.textContent = '0';
       topDonor.textContent = 'Chưa có dữ liệu';
       lastUpdate.textContent = 'Chưa có dữ liệu';
+      showMoreBtn.classList.add('hidden');
+      showLessBtn.classList.add('hidden');
       return;
     }
 
@@ -271,23 +318,15 @@ async function renderHistory() {
     topDonor.textContent = `${latest.member_name || '---'} · ${formatMoney(latest.amount)}`;
     lastUpdate.textContent = 'Cập nhật: ' + new Date().toLocaleString('vi-VN');
 
-    history.forEach((item) => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${new Date(item.created_at).toLocaleString('vi-VN')}</td>
-        <td>${escapeHtml(item.name || 'Ẩn danh')}</td>
-        <td>${escapeHtml(item.member_name || '---')}</td>
-        <td>${formatMoney(item.amount)}</td>
-        <td>${escapeHtml(item.info)}</td>
-      `;
-      tableBody.appendChild(row);
-    });
+    renderHistoryRows(history);
   } catch (error) {
     tableBody.innerHTML = '<tr><td colspan="5">Không tải được dữ liệu dùng chung.</td></tr>';
     totalAmount.textContent = '0 VND';
     totalCount.textContent = '0';
     topDonor.textContent = 'Lỗi tải dữ liệu';
     lastUpdate.textContent = 'Không thể kết nối server';
+    showMoreBtn.classList.add('hidden');
+    showLessBtn.classList.add('hidden');
     showToast('Không tải được dữ liệu dùng chung.');
   }
 }
@@ -400,8 +439,21 @@ function registerEvents() {
   document.getElementById('customDonateBtn').addEventListener('click', handleCustomDonate);
   document.getElementById('copyAccountBtn').addEventListener('click', copyAccountNumber);
   document.getElementById('closePopupBtn').addEventListener('click', closePopup);
-  refreshHistoryBtn.addEventListener('click', renderHistory);
+  refreshHistoryBtn.addEventListener('click', () => {
+    historyExpanded = false;
+    renderHistory();
+  });
   overlay.addEventListener('click', closePopup);
+
+  showMoreBtn.addEventListener('click', () => {
+    historyExpanded = true;
+    renderHistoryRows(latestHistoryCache);
+  });
+
+  showLessBtn.addEventListener('click', () => {
+    historyExpanded = false;
+    renderHistoryRows(latestHistoryCache);
+  });
 
   customAmountInput.addEventListener('input', () => {
     amountButtons.forEach((item) => item.classList.remove('active'));
