@@ -131,30 +131,35 @@
     </section>
 
     <section class="history-box">
-      <div class="history-header">
-        <div class="history-title-group">
-          <h2>Lịch sử tạo QR gần đây</h2>
-          <p id="lastUpdate">Đang tải dữ liệu...</p>
-        </div>
+  <div class="history-header">
+    <div class="history-title-group">
+      <h2>Lịch sử tạo QR gần đây</h2>
+      <p id="lastUpdate">Đang tải dữ liệu...</p>
+    </div>
 
-        <button type="button" class="secondary-btn" id="refreshHistoryBtn">Làm mới dữ liệu</button>
-      </div>
+    <button type="button" class="secondary-btn" id="refreshHistoryBtn">Làm mới dữ liệu</button>
+  </div>
 
-      <div class="table-wrap">
-        <table id="donateTable">
-          <thead>
-            <tr>
-              <th>Thời gian</th>
-              <th>Người ủng hộ</th>
-              <th>Thành viên nhận</th>
-              <th>Số tiền</th>
-              <th>Nội dung</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </section>
+  <div class="table-wrap">
+    <table id="donateTable">
+      <thead>
+        <tr>
+          <th>Thời gian</th>
+          <th>Người ủng hộ</th>
+          <th>Thành viên nhận</th>
+          <th>Số tiền</th>
+          <th>Nội dung</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <div class="history-actions">
+    <button type="button" class="secondary-btn hidden" id="showMoreBtn">Xem thêm</button>
+    <button type="button" class="secondary-btn hidden" id="showLessBtn">Thu gọn</button>
+  </div>
+</section>
 
     <div id="overlay" class="overlay hidden"></div>
     <div id="popup" class="popup hidden" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
