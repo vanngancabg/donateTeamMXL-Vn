@@ -535,6 +535,14 @@ button:hover,
   border: 1px solid var(--line);
 }
 
+.history-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 #donateTable {
   width: 100%;
   min-width: 820px;
@@ -743,6 +751,10 @@ footer a:hover {
     width: 100%;
     max-width: 100%;
   }
+.history-actions .secondary-btn {
+  width: auto;
+  min-width: 140px;
+}
 
   .team-actions {
     flex-direction: column;
