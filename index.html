@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Hỗ Trợ Cộng Đồng Median XL</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="top-banner">Ủng hộ Team Hỗ Trợ Cộng Đồng Median XL và đồng hành cùng cộng đồng Median XL Việt Nam</div>
+
+    <header class="hero-section compact-hero">
+      <div class="hero-content card-panel single-column">
+        <div class="hero-badge">Dự án donate cho team cộng đồng</div>
+        <h1 class="main-title">Team Hỗ Trợ Cộng Đồng Median XL</h1>
+        <p class="hero-text">
+          Team hỗ trợ cộng đồng người chơi Median XL, xây dựng nội dung, hướng dẫn và kết nối thành viên.
+          Mọi khoản ủng hộ sẽ giúp team duy trì hoạt động cộng đồng và phát triển thêm nội dung hữu ích.
+        </p>
+
+        <div class="team-actions">
+          <a href="https://discord.gg/tFT4QpAu9G" target="_blank" rel="noopener noreferrer" class="primary-link">Discord Server</a>
+          <a href="https://zalo.me/g/gyouui574" target="_blank" rel="noopener noreferrer" class="secondary-link">Nhóm Zalo</a>
+        </div>
+      </div>
+    </header>
+
+    <section class="dashboard">
+      <div class="stat-card">
+        <h3>💰 Tổng ủng hộ</h3>
+        <p id="totalAmount">0 VND</p>
+      </div>
+      <div class="stat-card">
+        <h3>🧾 Tổng lượt tạo QR</h3>
+        <p id="totalCount">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>🕘 Gần nhất</h3>
+        <p id="topDonor">---</p>
+      </div>
+    </section>
+
+    <section class="message-box">
+      <h2>Về team</h2>
+      <p>
+        Đây là nơi cộng đồng có thể ủng hộ trực tiếp cho từng thành viên đang đóng góp nội dung,
+        hướng dẫn và hỗ trợ người chơi Median XL.
+      </p>
+      <p>
+        Hãy chọn thành viên bạn muốn ủng hộ ở bên dưới. Mỗi thành viên sẽ có thông tin nhận chuyển khoản riêng,
+        để việc ủng hộ minh bạch, rõ ràng và thuận tiện hơn.
+      </p>
+    </section>
+
+    <section class="members-section">
+      <div class="section-head">
+        <h2>Chọn thành viên muốn ủng hộ</h2>
+        <p>Nhấn vào một thành viên để cập nhật ngay khu vực chuyển khoản và tạo mã QR.</p>
+      </div>
+
+      <div class="member-grid" id="memberGrid"></div>
+    </section>
+
+    <section class="selected-member-section">
+      <div class="section-head">
+        <h2>Thành viên đang được chọn</h2>
+        <p>Thông tin bên dưới sẽ thay đổi theo thành viên bạn chọn ở phía trên.</p>
+      </div>
+
+      <div class="selected-layout">
+        <section class="member-detail-card">
+          <div class="member-profile">
+            <img id="selectedAvatar" src="" alt="Ảnh thành viên" class="selected-avatar">
+            <div class="member-profile-text">
+              <div class="selected-badge">Đang nhận ủng hộ</div>
+              <h3 id="selectedDisplayName">---</h3>
+              <p id="selectedRealName" class="member-real-name">---</p>
+              <p id="selectedRole" class="member-role">---</p>
+            </div>
+          </div>
+
+          <p id="selectedDescription" class="member-description">---</p>
+
+          <div class="member-links" id="selectedLinks"></div>
+        </section>
+
+        <section class="donate-panel">
+          <div class="donate-info-box">
+            <h3>Thông tin chuyển khoản</h3>
+            <p><strong>Ngân hàng:</strong> <span id="selectedBankName">---</span></p>
+            <p><strong>Số tài khoản:</strong> <span id="selectedAccountNumber" class="account-number">---</span></p>
+            <p><strong>Chủ tài khoản:</strong> <span id="selectedAccountName">---</span></p>
+            <button id="copyAccountBtn" class="copy-btn">Copy số tài khoản</button>
+          </div>
+
+          <div class="donate-form-card">
+            <h3 class="form-title">Tạo mã QR ủng hộ</h3>
+
+            <section class="donate-buttons">
+              <button type="button" data-amount="50000" class="active">50.000 VND</button>
+              <button type="button" data-amount="100000">100.000 VND</button>
+              <button type="button" data-amount="200000">200.000 VND</button>
+              <button type="button" data-amount="300000">300.000 VND</button>
+            </section>
+
+            <section class="custom-amount">
+              <h4 class="custom-title">Mặc định đã chọn 50.000 VND, bạn có thể đổi nếu muốn</h4>
+
+              <div class="form-group">
+                <label for="customName">Tên người ủng hộ (không bắt buộc)</label>
+                <input type="text" id="customName" placeholder="Ví dụ: Một người chơi MXL">
+              </div>
+
+              <div class="form-group">
+                <label for="customAmount">Số tiền ủng hộ (VND)</label>
+                <input type="number" id="customAmount" placeholder="Nhập số tiền từ 10.000 VND" step="10000" min="10000" value="50000">
+                <span id="formattedAmount"></span>
+              </div>
+
+              <div class="form-group form-group-full">
+                <label for="customInfo">Nội dung chuyển khoản (không bắt buộc)</label>
+                <input type="text" id="customInfo" placeholder="Để trống sẽ dùng nội dung mặc định của thành viên được chọn">
+              </div>
+
+              <button type="button" class="primary-btn disabled" id="customDonateBtn" disabled>Tạo mã QR thanh toán</button>
+            </section>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="history-box">
+      <div class="history-header">
+        <div class="history-title-group">
+          <h2>Lịch sử tạo QR gần đây</h2>
+          <p id="lastUpdate">Đang tải dữ liệu...</p>
+        </div>
+
+        <button type="button" class="secondary-btn" id="refreshHistoryBtn">Làm mới dữ liệu</button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="donateTable">
+          <thead>
+            <tr>
+              <th>Thời gian</th>
+              <th>Người ủng hộ</th>
+              <th>Thành viên nhận</th>
+              <th>Số tiền</th>
+              <th>Nội dung</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <div id="overlay" class="overlay hidden"></div>
+    <div id="popup" class="popup hidden" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+      <p id="popupTitle" class="popup-title">Quét mã QR bằng ứng dụng ngân hàng của bạn</p>
+
+      <div class="popup-summary">
+        <p><strong>Người ủng hộ:</strong> <span id="popupDonorName">---</span></p>
+        <p><strong>Thành viên nhận:</strong> <span id="popupMemberName">---</span></p>
+        <p><strong>Số tiền:</strong> <span id="popupAmount">---</span></p>
+        <p><strong>Nội dung:</strong> <span id="popupInfo">---</span></p>
+      </div>
+
+      <img id="qrImage" src="" alt="Mã QR chuyển khoản">
+
+      <a id="qrDownload" href="" download="qr-ung-ho-median-xl.jpg" class="primary-btn download-link">Lưu ảnh mã QR</a>
+
+      <p class="popup-note">
+        iPhone: giữ tay vào ảnh QR và chọn “Lưu ảnh”.<br>
+        Android: có thể bấm nút tải ảnh ở trên.
+      </p>
+
+      <p class="popup-note highlight">Mã QR được tạo riêng cho thành viên bạn đã chọn.</p>
+
+      <button type="button" class="secondary-btn" id="closePopupBtn">Đóng</button>
+    </div>
+
+    <div id="toast">Đã copy số tài khoản!</div>
+
+    <footer>
+      <p>© 2026 Team Hỗ Trợ Cộng Đồng Median XL. Cảm ơn bạn đã đồng hành cùng cộng đồng Median XL.</p>
+      <p>
+        Liên hệ chung:
+        <a href="https://discord.gg/tFT4QpAu9G" target="_blank" rel="noopener noreferrer">Discord Server</a> |
+        <a href="https://zalo.me/g/gyouui574" target="_blank" rel="noopener noreferrer">Nhóm Zalo</a>
+      </p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
